@@ -1,0 +1,3 @@
+INSERT INTO application_user(colour, email, first_name, last_name, password, salt) VALUES ('#c43020', 'majak@gmail.com', 'Marijana', 'Kološnjaji', '$2a$12$gA3mLOdzIScwELW8kxcypeLO.BxG15WEQeg89kNT0VkRHg0hUFIQq', '$2a$12$gA3mLOdzIScwELW8kxcype');
+INSERT INTO application_user(colour, email, first_name, last_name, password, salt) VALUES ('#381491', 'vesnam@gmail.com', 'Vesna', 'Milić', '$2a$12$hRAFt3mzFGk/BqxhgPzEo.iEO6zgDFOMP1craDcThmCWwKgV6ZBUa', '$2a$12$hRAFt3mzFGk/BqxhgPzEo.');
+INSERT INTO application_user(colour, email, first_name, last_name, password, salt) VALUES ('#f7391e', 'marijanam@gmail.com', 'Marijana', 'Matkovski', '$2a$12$zWLx59cc14lqPGl7bL5sye6qXO125xr8D5khDDR3z4pO2rC3cvhXC', '$2a$12$zWLx59cc14lqPGl7bL5sye');
