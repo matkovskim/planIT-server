@@ -20,13 +20,13 @@ public class Team {
 
 	@Column
 	String title;
-	
+
 	@Column
 	String description;
-	
+
 	@ManyToOne
 	ApplicationUser creator;
-	
+
 	@ManyToMany
 	Set<ApplicationUser> members;
 
@@ -35,7 +35,7 @@ public class Team {
 		this.title = title;
 		this.description = description;
 		this.creator = creator;
-		this.members=new HashSet<>();
+		this.members = new HashSet<>();
 	}
 
 	public Team() {
@@ -81,5 +81,5 @@ public class Team {
 	public void setMembers(Set<ApplicationUser> members) {
 		this.members = members;
 	}
-	
+
 }

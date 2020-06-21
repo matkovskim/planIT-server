@@ -2,15 +2,15 @@ package planit.project.dto;
 
 public class TeamMemberDTO {
 
-	String teamTitle;
-	String email;
-	
+	private String teamTitle;
+	private String email;
+
 	public TeamMemberDTO(String teamTitle, String email) {
 		super();
 		this.teamTitle = teamTitle;
 		this.email = email;
 	}
-	
+
 	public TeamMemberDTO() {
 
 	}
@@ -30,5 +30,5 @@ public class TeamMemberDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 }
