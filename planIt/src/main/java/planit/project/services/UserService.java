@@ -46,7 +46,7 @@ public class UserService {
 
 		String hashedPassword = PasswordHash.hashPassword(loginDTO.getPassword(), user.getSalt());
 		if (hashedPassword.equals(user.getPassword())) {
-			return new LoggedResponseDTO(user.getEmail(), user.getFirstName(), user.getLastName(), user.getColour());
+			return new LoggedResponseDTO(user.getEmail(), user.getFirstName(), user.getLastName(), user.getColour(), user.getFirebaseId());
 		}
 		return null;
 	}

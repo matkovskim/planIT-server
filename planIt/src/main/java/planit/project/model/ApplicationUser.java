@@ -32,6 +32,9 @@ public class ApplicationUser {
 
 	@Column
 	private String salt;
+	
+	@Column
+	private String firebaseId;
 
 	public ApplicationUser() {
 
@@ -41,6 +44,7 @@ public class ApplicationUser {
 		this.email = newUser.getEmail();
 		this.firstName = newUser.getFirstName();
 		this.lastName = newUser.getLastName();
+		this.firebaseId = newUser.getFirebaseId();
 		this.setColour(newUser.getColour());
 	}
 
@@ -98,6 +102,14 @@ public class ApplicationUser {
 
 	public void setColour(String colour) {
 		this.colour = colour;
+	}
+
+	public String getFirebaseId() {
+		return firebaseId;
+	}
+
+	public void setFirebaseId(String firebaseId) {
+		this.firebaseId = firebaseId;
 	}
 
 }

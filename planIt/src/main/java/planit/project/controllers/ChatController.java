@@ -1,16 +1,26 @@
 package planit.project.controllers;
 
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import planit.project.utils.SendPushNotification;
+
+@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
+@RequestMapping(value = "/chat", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ChatController {
-    
-    @MessageMapping("/hello")
-    @SendTo("/chat/public")
-    private void game(String message) {
-    	System.out.println("Pogodjen socket");
-    }
-    
+
+	@GetMapping("/pushMessage")
+	public String sendPushNotificatoin() {
+		try {
+			SendPushNotification.pushFCMNotification("chat");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "Done";
+	}
+
 }
