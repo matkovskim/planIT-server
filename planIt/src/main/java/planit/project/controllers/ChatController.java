@@ -15,6 +15,7 @@ import planit.project.dto.MessageDTO;
 import planit.project.model.ApplicationUser;
 import planit.project.model.Team;
 import planit.project.services.ChatService;
+import planit.project.services.UserService;
 import planit.project.utils.SendPushNotification;
 
 @RestController
@@ -24,18 +25,25 @@ public class ChatController {
 	
 	@Autowired
 	private ChatService chatService;
+	
+	@Autowired
+	private UserService userService;
 
 	@PostMapping("/message")
 	public ResponseEntity<?> sendMessage(@RequestBody MessageDTO messageDTO) {
 
 		if (chatService.sendMessage(messageDTO)) {
 			try {
-				Team team = chatService.getTeamById(messageDTO.getServerTeamId());
-				if(team!=null) {
-					Set<ApplicationUser> members=team.getMembers();
-					for(ApplicationUser member:members) {
-						if(!member.getEmail().equals(messageDTO.getSender())){
-							SendPushNotification.pushFCMNotification(member.getFirebaseId(), team.getTitle(), messageDTO);
+				ApplicationUser sender = userService.findByEmail(messageDTO.getSender());
+				if(sender!=null) {
+					Team team = chatService.getTeamById(messageDTO.getServerTeamId());
+					if(team!=null) {
+						Set<ApplicationUser> members=team.getMembers();
+						for(ApplicationUser member:members) {
+							if(!member.getEmail().equals(messageDTO.getSender())){
+								String firstLastName = sender.getFirstName()+" "+sender.getLastName();
+								SendPushNotification.pushFCMNotification(firstLastName, member.getFirebaseId(), team.getTitle(), messageDTO);
+							}
 						}
 					}
 				}
