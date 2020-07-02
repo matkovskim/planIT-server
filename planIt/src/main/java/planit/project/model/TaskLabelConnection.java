@@ -1,34 +1,46 @@
 package planit.project.model;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-@Entity
-public class Team {
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Entity
+public class TaskLabelConnection {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@Transient
+	private Long taskId;
+	
+	@Transient
+	private Long labelId;
+	
+	@JsonIgnore
+	@ManyToOne
+	private Task task;
+	
+	@JsonIgnore
+	@ManyToOne
+	private Label label;
+	
 
 	@Column
-	String title;
-
-	@Column
-	String description;
+	private boolean deleted;
 	
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
@@ -39,26 +51,9 @@ public class Team {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modify_date")
 	private Date modifyDate;
-	
-	@Column
-	private boolean deleted;
 
-	@ManyToOne
-	ApplicationUser creator;
-
-	@ManyToMany
-	Set<ApplicationUser> members;
-
-	public Team(String title, String description, ApplicationUser creator) {
-		super();
-		this.title = title;
-		this.description = description;
-		this.creator = creator;
-		this.members = new HashSet<>();
-	}
-
-	public Team() {
-		super();
+	public TaskLabelConnection() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public Long getId() {
@@ -69,36 +64,44 @@ public class Team {
 		this.id = id;
 	}
 
-	public String getTitle() {
-		return title;
+	public Long getTaskId() {
+		return taskId;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setTaskId(Long taskId) {
+		this.taskId = taskId;
 	}
 
-	public String getDescription() {
-		return description;
+	public Long getLabelId() {
+		return labelId;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setLabelId(Long labelId) {
+		this.labelId = labelId;
 	}
 
-	public ApplicationUser getCreator() {
-		return creator;
+	public Task getTask() {
+		return task;
 	}
 
-	public void setCreator(ApplicationUser creator) {
-		this.creator = creator;
+	public void setTask(Task task) {
+		this.task = task;
 	}
 
-	public Set<ApplicationUser> getMembers() {
-		return members;
+	public Label getLabel() {
+		return label;
 	}
 
-	public void setMembers(Set<ApplicationUser> members) {
-		this.members = members;
+	public void setLabel(Label label) {
+		this.label = label;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	public Date getCreateDate() {

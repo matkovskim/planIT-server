@@ -169,5 +169,8 @@ public class TeamService {
 		
 	}
 	
+	public Team save(Team team) {
+		return this.teamRepository.save(team);
+	}
 	
 }
