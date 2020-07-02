@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import planit.project.dto.RegisterDTO;
 
 @Entity
@@ -27,11 +29,13 @@ public class ApplicationUser {
 	@Column
 	private String colour;
 
+	@JsonIgnore
 	@Column
 	private String password;
 
 	@Column
 	private String salt;
+	
 
 	public ApplicationUser() {
 
@@ -41,7 +45,7 @@ public class ApplicationUser {
 		this.email = newUser.getEmail();
 		this.firstName = newUser.getFirstName();
 		this.lastName = newUser.getLastName();
-		this.setColour(newUser.getColour());
+		this.colour = newUser.getColour();
 	}
 
 	public Long getId() {

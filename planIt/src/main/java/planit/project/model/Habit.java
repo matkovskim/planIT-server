@@ -1,15 +1,12 @@
 package planit.project.model;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -17,19 +14,29 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-public class Team {
+public class Habit {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column
-	String title;
+	private String title;
+	@Column
+	private String description;
 
 	@Column
-	String description;
-	
+	private Integer goal;
+
+	@Column
+	private Integer numberOfDays;
+
+	@Column
+	private boolean deleted;
+
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_date")
@@ -40,25 +47,21 @@ public class Team {
 	@Column(name = "modify_date")
 	private Date modifyDate;
 	
-	@Column
-	private boolean deleted;
-
+	@JsonIgnore
 	@ManyToOne
-	ApplicationUser creator;
+	private ApplicationUser user;
 
-	@ManyToMany
-	Set<ApplicationUser> members;
 
-	public Team(String title, String description, ApplicationUser creator) {
-		super();
-		this.title = title;
-		this.description = description;
-		this.creator = creator;
-		this.members = new HashSet<>();
+	public Habit() {
+		
 	}
 
-	public Team() {
-		super();
+	public Habit(String title, String description, Integer goal, Integer numberOfDays) {
+
+		this.title = title;
+		this.description = description;
+		this.goal = goal;
+		this.numberOfDays = numberOfDays;
 	}
 
 	public Long getId() {
@@ -85,20 +88,20 @@ public class Team {
 		this.description = description;
 	}
 
-	public ApplicationUser getCreator() {
-		return creator;
+	public Integer getGoal() {
+		return goal;
 	}
 
-	public void setCreator(ApplicationUser creator) {
-		this.creator = creator;
+	public void setGoal(Integer goal) {
+		this.goal = goal;
 	}
 
-	public Set<ApplicationUser> getMembers() {
-		return members;
+	public Integer getNumberOfDays() {
+		return numberOfDays;
 	}
 
-	public void setMembers(Set<ApplicationUser> members) {
-		this.members = members;
+	public void setNumberOfDays(Integer numberOfDays) {
+		this.numberOfDays = numberOfDays;
 	}
 
 	public Date getCreateDate() {
@@ -115,6 +118,23 @@ public class Team {
 
 	public void setModifyDate(Date modifyDate) {
 		this.modifyDate = modifyDate;
+	}
+
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public ApplicationUser getUser() {
+		return user;
+	}
+
+	public void setUser(ApplicationUser user) {
+		this.user = user;
 	}
 
 }

@@ -1,34 +1,41 @@
 package planit.project.model;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-public class Team {
+public class HabitFulfillment {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
 	@Column
-	String title;
-
+	private Date day;
+	
 	@Column
-	String description;
+	private boolean deleted;
+	
+	@Transient
+	private Long habitId;
+	
+	@JsonIgnore
+	@ManyToOne
+	private Habit habit;
 	
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
@@ -39,26 +46,9 @@ public class Team {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modify_date")
 	private Date modifyDate;
-	
-	@Column
-	private boolean deleted;
 
-	@ManyToOne
-	ApplicationUser creator;
-
-	@ManyToMany
-	Set<ApplicationUser> members;
-
-	public Team(String title, String description, ApplicationUser creator) {
-		super();
-		this.title = title;
-		this.description = description;
-		this.creator = creator;
-		this.members = new HashSet<>();
-	}
-
-	public Team() {
-		super();
+	public HabitFulfillment() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public Long getId() {
@@ -69,36 +59,20 @@ public class Team {
 		this.id = id;
 	}
 
-	public String getTitle() {
-		return title;
+	public Date getDay() {
+		return day;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setDay(Date day) {
+		this.day = day;
 	}
 
-	public String getDescription() {
-		return description;
+	public Habit getHabit() {
+		return habit;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public ApplicationUser getCreator() {
-		return creator;
-	}
-
-	public void setCreator(ApplicationUser creator) {
-		this.creator = creator;
-	}
-
-	public Set<ApplicationUser> getMembers() {
-		return members;
-	}
-
-	public void setMembers(Set<ApplicationUser> members) {
-		this.members = members;
+	public void setHabit(Habit habit) {
+		this.habit = habit;
 	}
 
 	public Date getCreateDate() {
@@ -115,6 +89,22 @@ public class Team {
 
 	public void setModifyDate(Date modifyDate) {
 		this.modifyDate = modifyDate;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Long getHabitId() {
+		return habitId;
+	}
+
+	public void setHabitId(Long habitId) {
+		this.habitId = habitId;
 	}
 
 }
