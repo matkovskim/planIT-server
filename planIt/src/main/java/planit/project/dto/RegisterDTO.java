@@ -11,6 +11,8 @@ public class RegisterDTO {
 	private String lastName;
 
 	private String colour;
+	
+	private String firebaseId;
 
 	RegisterDTO() {
 
@@ -54,6 +56,14 @@ public class RegisterDTO {
 
 	public void setColour(String colour) {
 		this.colour = colour;
+	}
+
+	public String getFirebaseId() {
+		return firebaseId;
+	}
+
+	public void setFirebaseId(String firebaseId) {
+		this.firebaseId = firebaseId;
 	}
 
 }

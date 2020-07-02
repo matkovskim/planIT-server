@@ -10,12 +10,15 @@ public class LoggedResponseDTO {
 
 	private String colour;
 
-	public LoggedResponseDTO(String email, String firstName, String lastName, String colour) {
+	private String firebaseId;
+
+	public LoggedResponseDTO(String email, String firstName, String lastName, String colour, String firebaseId) {
 		super();
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.colour = colour;
+		this.firebaseId = firebaseId;
 	}
 
 	LoggedResponseDTO() {
@@ -52,6 +55,14 @@ public class LoggedResponseDTO {
 
 	public void setColour(String colour) {
 		this.colour = colour;
+	}
+
+	public String getFirebaseId() {
+		return firebaseId;
+	}
+
+	public void setFirebaseId(String firebaseId) {
+		this.firebaseId = firebaseId;
 	}
 
 }
