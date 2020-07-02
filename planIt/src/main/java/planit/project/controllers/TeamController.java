@@ -1,4 +1,6 @@
 package planit.project.controllers;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,7 +63,6 @@ public class TeamController {
 
 	@DeleteMapping("/{teamId}")
 	public ResponseEntity<?> deleteTeam(@PathVariable Integer teamId) {
-		System.out.println(teamId);
 		if (teamService.deleteTeam(teamId)) {
 			return ResponseEntity.status(200).build();
 		}
@@ -82,9 +83,9 @@ public class TeamController {
 		if(teamService.updateTeamMembers(teamId, teamDTO)) {
 			return ResponseEntity.status(200).build();
 		}
-		
 		return ResponseEntity.status(400).build();
 	}
+	
 
 	
 }

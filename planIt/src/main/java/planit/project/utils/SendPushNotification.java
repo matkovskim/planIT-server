@@ -33,11 +33,19 @@ public class SendPushNotification {
 
 	   JSONObject json = new JSONObject();
 	   json.put("to", "/topics/"+userId+"-"+messageDTO.getServerTeamId());
+
 	   JSONObject info = new JSONObject();
+	   JSONObject data = new JSONObject();
+
 	   info.put("title", firstLastName+" send message to " + teamName); 
 	   info.put("body", messageDTO.getMessage()); 
 	   info.put("sender", messageDTO.getSender());
+	   info.put("click_action", "OPEN_ACTIVITY_1");
+
+	   data.put("sender", messageDTO.getSender());
+
 	   json.put("notification", info);
+	   json.put("data", data);
 
 	   OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 	   wr.write(json.toString());

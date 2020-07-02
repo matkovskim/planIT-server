@@ -1,14 +1,18 @@
 package planit.project.controllers;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import planit.project.dto.MessageDTO;
@@ -52,9 +56,16 @@ public class ChatController {
 			}
 			return ResponseEntity.status(200).build();
 		}
-
 		return ResponseEntity.status(400).build();
-
+	}
+	
+	@GetMapping("/all")
+	public ResponseEntity<List<MessageDTO>> checkUser(@RequestParam Integer teamId) {
+		List<MessageDTO> messages = chatService.getMessages(teamId);
+		if(messages!=null) {
+			return new ResponseEntity<>(messages, HttpStatus.OK);
+		}
+		return ResponseEntity.status(400).build();
 	}
 	
 }
