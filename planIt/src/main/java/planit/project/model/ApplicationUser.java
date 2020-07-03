@@ -64,7 +64,7 @@ public class ApplicationUser {
 
 	public ApplicationUser(RegisterDTO newUser) {
 		this.email = newUser.getEmail();
-		this.firstName = newUser.getFirstName();
+		this.firstName = newUser.getName();
 		this.lastName = newUser.getLastName();
 		this.firebaseId = newUser.getFirebaseId();
 		this.colour = newUser.getColour();

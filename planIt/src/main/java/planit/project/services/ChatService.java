@@ -58,7 +58,7 @@ public class ChatService {
 		return null;
 	}
 
-	public List<MessageDTO> getMessages(Integer teamId) {
+	public List<MessageDTO> getMessages(Long teamId) {
 
 		List<MessageDTO> messageDTOs = new ArrayList<MessageDTO>();
 
