@@ -4,7 +4,7 @@ public class LoggedResponseDTO {
 
 	private String email;
 
-	private String firstName;
+	private String name;
 
 	private String lastName;
 
@@ -15,7 +15,7 @@ public class LoggedResponseDTO {
 	public LoggedResponseDTO(String email, String firstName, String lastName, String colour, String firebaseId) {
 		super();
 		this.email = email;
-		this.firstName = firstName;
+		this.name = firstName;
 		this.lastName = lastName;
 		this.colour = colour;
 		this.firebaseId = firebaseId;
@@ -33,12 +33,12 @@ public class LoggedResponseDTO {
 		this.email = email;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setName(String firstName) {
+		this.name = firstName;
 	}
 
 	public String getLastName() {
