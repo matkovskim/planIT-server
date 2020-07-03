@@ -62,7 +62,7 @@ public class ChatService {
 
 		List<MessageDTO> messageDTOs = new ArrayList<MessageDTO>();
 
-		Optional<Team> team = teamRepository.findById(teamId.longValue());
+		Optional<Team> team = teamRepository.findById(teamId);
 		if (team.isPresent()) {
 			List<UserMessage> messages = userMessageRepository.findAllByTeam(team.get());
 			if (messages != null) {

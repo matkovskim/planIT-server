@@ -28,6 +28,9 @@ public class TaskService {
 
 				if (task.getTeam() != null)
 					task.setTeamId(task.getTeam().getId());
+				
+				if(task.getUser() != null)
+					task.setUserEmail(task.getUser().getEmail());
 			}
 			return list;
 		}
@@ -47,6 +50,9 @@ public class TaskService {
 
 				if (task.getTeam() != null)
 					task.setTeamId(task.getTeam().getId());
+				
+				if(task.getUser() != null)
+					task.setUserEmail(task.getUser().getEmail());
 			}
 			return list;
 		}

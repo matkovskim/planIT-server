@@ -16,10 +16,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class UserMessage {
 
+	@JsonProperty("globalId")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -39,19 +41,21 @@ public class UserMessage {
 	@Transient
 	private String senderEmail;
 
+	@JsonIgnore
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_date")
 	private Date createDate;
 
+	@JsonIgnore
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modify_date")
 	private Date modifyDate;
 
-	@JsonIgnore
 	@ManyToOne
 	private ApplicationUser sender;
+	
 
 	@JsonIgnore
 	@ManyToOne
