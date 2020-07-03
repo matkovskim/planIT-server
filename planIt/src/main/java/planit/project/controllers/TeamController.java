@@ -3,6 +3,7 @@ package planit.project.controllers;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import planit.project.dto.TeamMemberResponseDTO;
 import planit.project.dto.TeamSyncDTO;
 import planit.project.model.ApplicationUser;
 import planit.project.model.Team;
+import planit.project.model.TeamUserConnection;
 import planit.project.model.UserMessage;
 import planit.project.services.ChatService;
 import planit.project.services.TeamService;
@@ -50,7 +52,7 @@ public class TeamController {
 	public ResponseEntity<Integer> createTeam(@RequestBody TeamDTO createTeamDTO) {
 
 		Integer id = teamService.createTeam(createTeamDTO);
-		if(id !=null) {
+		if (id != null) {
 			return new ResponseEntity<>(id, HttpStatus.OK);
 		}
 
@@ -119,7 +121,8 @@ public class TeamController {
 	}
 
 	@GetMapping("/sync")
-	public ResponseEntity<?> synchronizationData(@RequestParam String email, @RequestParam(value = "date", required = false) Long date) {
+	public ResponseEntity<?> synchronizationData(@RequestParam String email,
+			@RequestParam(value = "date", required = false) Long date) {
 
 		System.out.println(email);
 		System.out.println(date);
@@ -136,11 +139,16 @@ public class TeamController {
 		TeamSyncDTO dto = new TeamSyncDTO();
 		// if user sync date exists
 		if (date != null) {
-			
+
 			dateUserSync = new Date(date);
 			dto.setMessages(this.chatService.syncDateConn(user, dateUserSync));
 			dto.setTeams(this.teamService.syncDate(user, dateUserSync));
 			dto.setTeamUserConnections(this.teamService.syncDateConn(user, dateUserSync));
+			dto.setUsers(new HashSet<>());
+			for (TeamUserConnection conn : dto.getTeamUserConnections()) {
+				if(!dto.getUsers().contains(conn.getUser()))
+					dto.getUsers().add(conn.getUser());
+			}
 
 			return ResponseEntity.ok(dto);
 
@@ -149,6 +157,12 @@ public class TeamController {
 		dto.setMessages(this.chatService.firstSyncConn(user));
 		dto.setTeams(this.teamService.firstSync(user));
 		dto.setTeamUserConnections(this.teamService.firstSyncConn(user));
+		dto.setUsers(new HashSet<>());
+		for (TeamUserConnection conn : dto.getTeamUserConnections()) {
+			if(!dto.getUsers().contains(conn.getUser()))
+				dto.getUsers().add(conn.getUser());
+		}
+
 
 		return ResponseEntity.ok(dto);
 	}
@@ -159,7 +173,7 @@ public class TeamController {
 		ApplicationUser maja = this.userService.findByEmail("maja@gmail.com");
 
 		Team team = new Team("Team 1", "Opis", user);
-		this.teamService.save(team);
+		team = this.teamService.save(team);
 
 		this.teamService.addMember(team, user);
 		this.teamService.addMember(team, maja);

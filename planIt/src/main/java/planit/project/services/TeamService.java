@@ -167,6 +167,7 @@ public class TeamService {
 		if (list != null) {
 			for (Team team : list) {
 				team.setCreatorEmail(team.getCreator().getEmail());
+				team.setCreatorId(team.getCreator().getId());
 			}
 			return list;
 		}
@@ -182,6 +183,7 @@ public class TeamService {
 		if (list != null) {
 			for (Team team : list) {
 				team.setCreatorEmail(team.getCreator().getEmail());
+				team.setCreatorId(team.getCreator().getId());
 			}
 			return list;
 		}
@@ -195,7 +197,11 @@ public class TeamService {
 		List<TeamUserConnection> members = new ArrayList<>();
 		if (listTeam != null) {
 			for (Team team : listTeam) {
-				members.addAll(this.teamUserRepository.findMembers(team, false));
+				List<TeamUserConnection> conn = this.teamUserRepository.findMembers(team, false);
+				for(TeamUserConnection c : conn) {
+					c.setTeamId(team.getId());
+				}
+				members.addAll(conn);
 			}
 			return members;
 		}
@@ -210,8 +216,14 @@ public class TeamService {
 		List<TeamUserConnection> members = new ArrayList<>();
 		if (listTeam != null) {
 			for (Team team : listTeam) {
-				members.addAll(this.teamUserRepository.findModifiedMembers(team, syncDate));
+				List<TeamUserConnection> conn = this.teamUserRepository.findModifiedMembers(team, syncDate);
+				for(TeamUserConnection c : conn) {
+					c.setTeamId(team.getId());
+				}
+				members.addAll(conn);
 			}
+			
+			
 			return members;
 		}
 
