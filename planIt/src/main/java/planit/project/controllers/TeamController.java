@@ -119,8 +119,7 @@ public class TeamController {
 	}
 
 	@GetMapping("/sync")
-	public ResponseEntity<?> synchronizationData(@RequestParam String email,
-			@RequestParam(value = "date", required = false) String date) {
+	public ResponseEntity<?> synchronizationData(@RequestParam String email, @RequestParam(value = "date", required = false) Long date) {
 
 		System.out.println(email);
 		System.out.println(date);
@@ -137,14 +136,8 @@ public class TeamController {
 		TeamSyncDTO dto = new TeamSyncDTO();
 		// if user sync date exists
 		if (date != null) {
-
-			try {
-				dateUserSync = format.parse(date);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				return ResponseEntity.badRequest().build();
-			}
-
+			
+			dateUserSync = new Date(date);
 			dto.setMessages(this.chatService.syncDateConn(user, dateUserSync));
 			dto.setTeams(this.teamService.syncDate(user, dateUserSync));
 			dto.setTeamUserConnections(this.teamService.syncDateConn(user, dateUserSync));

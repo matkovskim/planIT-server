@@ -64,4 +64,11 @@ public class HabitSyncDTO {
 		this.reminderConn = reminderConn;
 	}
 
+	@Override
+	public String toString() {
+		return "HabitSyncDTO [habits=" + habits + ", habitFulfillments=" + habitFulfillments + ", habitDayConnection="
+				+ habitDayConnection + ", habitReminderConnections=" + habitReminderConnections + ", reminderConn="
+				+ reminderConn + "]";
+	}
+
 }

@@ -41,11 +41,13 @@ public class HabitReminderConnection {
 	@Column
 	private boolean deleted;
 	
+	@JsonIgnore
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_date")
 	private Date createDate;
 
+	@JsonIgnore
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modify_date")
@@ -135,5 +137,14 @@ public class HabitReminderConnection {
 	public void setReminderId(Long reminderId) {
 		this.reminderId = reminderId;
 	}
+
+
+	@Override
+	public String toString() {
+		return "HabitReminderConnection [id=" + id + ", habitId=" + habitId + ", reminderId=" + reminderId + ", habit="
+				+ habit + ", reminder=" + reminder + ", deleted=" + deleted + ", createDate=" + createDate
+				+ ", modifyDate=" + modifyDate + "]";
+	}
+	
 
 }

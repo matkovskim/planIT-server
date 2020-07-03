@@ -39,11 +39,13 @@ public class HabitDayConnection {
 	@Column
 	private boolean deleted;
 	
+	@JsonIgnore
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_date")
 	private Date createDate;
 
+	@JsonIgnore
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modify_date")
@@ -108,5 +110,13 @@ public class HabitDayConnection {
 	public void setHabitId(Long habitId) {
 		this.habitId = habitId;
 	}
+
+	@Override
+	public String toString() {
+		return "HabitDayConnection [id=" + id + ", habit=" + habit + ", habitId=" + habitId + ", day=" + day
+				+ ", deleted=" + deleted + ", createDate=" + createDate + ", modifyDate=" + modifyDate + "]";
+	}
+	
+	
 
 }

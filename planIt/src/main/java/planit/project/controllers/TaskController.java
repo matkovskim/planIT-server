@@ -35,60 +35,55 @@ public class TaskController {
 
 	@Autowired
 	private TaskService taskService;
-	
+
 	@Autowired
 	private LabelService labelService;
-	
+
 	@Autowired
 	private TaskLabelConnectionService taskLabelConnectionService;
-	
+
 	@Autowired
 	private ReminderService reminderService;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private TeamService teamService;
-	
+
 	private DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-	
+
 	@GetMapping("/sync")
-	public ResponseEntity<?> synchronizationData(@RequestParam String email, @RequestParam(value = "date", required=false) String date) {
-		
+	public ResponseEntity<?> synchronizationData(@RequestParam String email,
+			@RequestParam(value = "date", required = false) Long date) {
+
 		System.out.println(email);
 		System.out.println(date);
-		
+
 		ApplicationUser user = null;
-		
-		if(email != null) {
+
+		if (email != null) {
 			user = this.userService.findByEmail(email);
-			if(user == null)
-				return ResponseEntity.badRequest().build(); 
+			if (user == null)
+				return ResponseEntity.badRequest().build();
 		}
-		
+
 		Date dateUserSync = null;
 		TaskSyncDTO dto = new TaskSyncDTO();
 		// if user sync date exists
 		if (date != null) {
-			
-			try {
-				dateUserSync = format.parse(date);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				return ResponseEntity.badRequest().build();
-			}
-			
-			
+
+			dateUserSync = new Date(date);
+
 			dto.setTasks(this.taskService.syncDate(user, dateUserSync));
 			dto.setLabels(this.labelService.syncByDate(user, dateUserSync));
 			dto.setTaskLabelConnections(this.taskLabelConnectionService.syncByDate(user, dateUserSync));
 			dto.setTaskReminders(this.reminderService.syncByDateTask(user, dateUserSync));
-			
+
 			return ResponseEntity.ok(dto);
-			
+
 		}
-		
+
 		dto.setTasks(this.taskService.firstSync(user));
 		dto.setLabels(this.labelService.firstSync(user));
 		dto.setTaskLabelConnections(this.taskLabelConnectionService.firstSync(user));
@@ -96,39 +91,36 @@ public class TaskController {
 
 		return ResponseEntity.ok(dto);
 	}
-	
+
 	@GetMapping("/init")
 	public ResponseEntity<?> init() throws Exception {
-		
+
 		ApplicationUser user = this.userService.findByEmail("vesnam@gmail.com");
-		
+
 		Team team = new Team();
 		team = this.teamService.save(team);
-		
+
 		Reminder reminder = new Reminder();
 		reminder = this.reminderService.save(reminder);
-	
-		Task task = new Task("Task 1", "Opis", "address", format.parse("2020-06-22"), format.parse("2020-07-27"), false, false, TaskPriority.HIGH, null, null, team, reminder, user);
+
+		Task task = new Task("Task 1", "Opis", "address", format.parse("2020-06-22"), format.parse("2020-07-27"), false,
+				false, TaskPriority.HIGH, null, null, team, reminder, user);
 		task = this.taskService.save(task);
-		
+
 		Label label = new Label();
 		label.setName("vekica");
 		label.setColor("142");
-		
+
 		label = this.labelService.save(label);
-		
+
 		TaskLabelConnection conn = new TaskLabelConnection();
 		conn.setTask(task);
 		conn.setLabel(label);
 		conn.setTaskId(task.getId());
 		conn.setLabelId(label.getId());
 		this.taskLabelConnectionService.save(conn);
-		
-		
-		
+
 		return ResponseEntity.status(200).build();
 	}
-	
-	
 
 }

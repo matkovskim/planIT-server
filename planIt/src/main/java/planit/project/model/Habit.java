@@ -37,11 +37,13 @@ public class Habit {
 	@Column
 	private boolean deleted;
 
+	@JsonIgnore
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_date")
 	private Date createDate;
 
+	@JsonIgnore
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modify_date")
@@ -137,4 +139,12 @@ public class Habit {
 		this.user = user;
 	}
 
+	@Override
+	public String toString() {
+		return "Habit [id=" + id + ", title=" + title + ", description=" + description + ", goal=" + goal
+				+ ", numberOfDays=" + numberOfDays + ", deleted=" + deleted + ", createDate=" + createDate
+				+ ", modifyDate=" + modifyDate + ", user=" + user + "]";
+	}
+
+	
 }

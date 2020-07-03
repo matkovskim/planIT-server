@@ -37,11 +37,13 @@ public class HabitFulfillment {
 	@ManyToOne
 	private Habit habit;
 	
+	@JsonIgnore
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_date")
 	private Date createDate;
 
+	@JsonIgnore
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modify_date")
@@ -106,5 +108,12 @@ public class HabitFulfillment {
 	public void setHabitId(Long habitId) {
 		this.habitId = habitId;
 	}
+
+	@Override
+	public String toString() {
+		return "HabitFulfillment [id=" + id + ", day=" + day + ", deleted=" + deleted + ", habitId=" + habitId
+				+ ", habit=" + habit + ", createDate=" + createDate + ", modifyDate=" + modifyDate + "]";
+	}
+	
 
 }

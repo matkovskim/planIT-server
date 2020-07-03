@@ -13,6 +13,8 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Reminder {
 	
@@ -26,11 +28,13 @@ public class Reminder {
 	@Column
 	private boolean deleted;
 	
+	@JsonIgnore
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_date")
 	private Date createDate;
 
+	@JsonIgnore
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modify_date")
@@ -63,5 +67,13 @@ public class Reminder {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
+
+	@Override
+	public String toString() {
+		return "Reminder [id=" + id + ", date=" + date + ", deleted=" + deleted + ", createDate=" + createDate
+				+ ", modifyDate=" + modifyDate + "]";
+	}
+	
+	
 
 }
