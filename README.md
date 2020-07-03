@@ -12,7 +12,7 @@ The PlanIT android application repository can be accessed [here](https://github.
 
 ## Technologies used
 - SpringBoot
-- PostrgreSQL database
+- PostgreSQL database
 
 ## Contributors
 
