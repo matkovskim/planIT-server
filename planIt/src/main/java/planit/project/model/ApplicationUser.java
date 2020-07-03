@@ -1,10 +1,17 @@
 package planit.project.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,6 +20,7 @@ import planit.project.dto.RegisterDTO;
 @Entity
 public class ApplicationUser {
 
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -33,11 +41,22 @@ public class ApplicationUser {
 	@Column
 	private String password;
 
+	@JsonIgnore
 	@Column
 	private String salt;
 	
 	@Column
 	private String firebaseId;
+	
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "create_date")
+	private Date createDate;
+
+	@UpdateTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "modify_date")
+	private Date modifyDate;
 
 	public ApplicationUser() {
 
@@ -113,6 +132,22 @@ public class ApplicationUser {
 
 	public void setFirebaseId(String firebaseId) {
 		this.firebaseId = firebaseId;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Date getModifyDate() {
+		return modifyDate;
+	}
+
+	public void setModifyDate(Date modifyDate) {
+		this.modifyDate = modifyDate;
 	}
 
 }

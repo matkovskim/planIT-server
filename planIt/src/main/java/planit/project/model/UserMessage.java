@@ -1,11 +1,21 @@
 package planit.project.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class UserMessage {
@@ -20,11 +30,33 @@ public class UserMessage {
 	@Column
 	private Long createdAt;
 
+	@Column
+	private boolean deleted;
+	
+	@Transient
+	private Long teamId;
+	
+	@Transient
+	private String senderEmail;
+
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "create_date")
+	private Date createDate;
+
+	@UpdateTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "modify_date")
+	private Date modifyDate;
+
+	@JsonIgnore
 	@ManyToOne
 	private ApplicationUser sender;
 
+	@JsonIgnore
 	@ManyToOne
 	private Team team;
+	
 
 	public UserMessage() {
 
@@ -76,6 +108,46 @@ public class UserMessage {
 
 	public void setTeam(Team team) {
 		this.team = team;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Date getModifyDate() {
+		return modifyDate;
+	}
+
+	public void setModifyDate(Date modifyDate) {
+		this.modifyDate = modifyDate;
+	}
+
+	public Long getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(Long teamId) {
+		this.teamId = teamId;
+	}
+
+	public String getSenderEmail() {
+		return senderEmail;
+	}
+
+	public void setSenderEmail(String senderEmail) {
+		this.senderEmail = senderEmail;
 	}
 
 }

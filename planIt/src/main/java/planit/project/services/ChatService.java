@@ -1,6 +1,7 @@
 package planit.project.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +76,43 @@ public class ChatService {
 			return null;
 		}
 		return null;
+	}
+
+	public List<UserMessage> findByTeam(Team team) {
+		return this.userMessageRepository.findAllByTeam(team);
+	}
+
+	public UserMessage save(UserMessage message) {
+		return this.userMessageRepository.save(message);
+	}
+
+	public List<UserMessage> firstSyncConn(ApplicationUser user) {
+
+		List<UserMessage> list = this.userMessageRepository.findMessagesFirstSync(user, false);
+		if (list != null) {
+			for (UserMessage message : list) {
+				message.setSenderEmail(message.getSender().getEmail());
+				message.setTeamId(message.getTeam().getId());
+			}
+			return list;
+		}
+
+		return new ArrayList<>();
+
+	}
+
+	public List<UserMessage> syncDateConn(ApplicationUser user, Date syncDate) {
+
+		List<UserMessage> list = this.userMessageRepository.findMessagesSyncDate(user, syncDate);
+		if (list != null) {
+			for (UserMessage message : list) {
+				message.setSenderEmail(message.getSender().getEmail());
+				message.setTeamId(message.getTeam().getId());
+			}
+			return list;
+		}
+
+		return new ArrayList<>();
 	}
 
 }

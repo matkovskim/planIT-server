@@ -1,21 +1,21 @@
 package planit.project.model;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Team {
@@ -25,10 +25,10 @@ public class Team {
 	private Long id;
 
 	@Column
-	String title;
+	private String title;
 
 	@Column
-	String description;
+	private String description;
 	
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
@@ -42,19 +42,20 @@ public class Team {
 	
 	@Column
 	private boolean deleted;
+	
+	@Transient
+	private String creatorEmail;
 
+	@JsonIgnore
 	@ManyToOne
-	ApplicationUser creator;
+	private ApplicationUser creator;
 
-	@ManyToMany
-	Set<ApplicationUser> members;
 
 	public Team(String title, String description, ApplicationUser creator) {
 		super();
 		this.title = title;
 		this.description = description;
 		this.creator = creator;
-		this.members = new HashSet<>();
 	}
 
 	public Team() {
@@ -93,14 +94,6 @@ public class Team {
 		this.creator = creator;
 	}
 
-	public Set<ApplicationUser> getMembers() {
-		return members;
-	}
-
-	public void setMembers(Set<ApplicationUser> members) {
-		this.members = members;
-	}
-
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -115,6 +108,22 @@ public class Team {
 
 	public void setModifyDate(Date modifyDate) {
 		this.modifyDate = modifyDate;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public String getCreatorEmail() {
+		return creatorEmail;
+	}
+
+	public void setCreatorEmail(String creatorEmail) {
+		this.creatorEmail = creatorEmail;
 	}
 
 }

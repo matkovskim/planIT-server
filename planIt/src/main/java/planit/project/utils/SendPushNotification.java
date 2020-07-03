@@ -40,9 +40,10 @@ public class SendPushNotification {
 	   info.put("title", firstLastName+" send message to " + teamName); 
 	   info.put("body", messageDTO.getMessage()); 
 	   info.put("sender", messageDTO.getSender());
-	   info.put("click_action", "OPEN_ACTIVITY_1");
+	   info.put("click_action", "OPEN_ACTIVITY");
 
 	   data.put("sender", messageDTO.getSender());
+	   data.put("teamId", messageDTO.getServerTeamId());
 
 	   json.put("notification", info);
 	   json.put("data", data);
