@@ -35,12 +35,12 @@ public class TeamService {
 		return this.teamRepository.findByIdAndDeleted(id, false);
 	}
 
-	public boolean createTeam(TeamDTO createTeamDTO) {
+	public Integer createTeam(TeamDTO createTeamDTO) {
 
 		ApplicationUser creator = applicationUserRepository.findByEmail(createTeamDTO.getCreator());
 
 		if (creator == null)
-			return false;
+			return null;
 
 		List<ApplicationUser> users = new ArrayList<>();
 
@@ -48,21 +48,21 @@ public class TeamService {
 			ApplicationUser user;
 			user = this.applicationUserRepository.findByEmail(email);
 			if (user == null)
-				return false;
+				return null;
 			users.add(user);
 		}
 
 		Team newTeam = new Team(createTeamDTO.getTitle(), createTeamDTO.getDescription(), creator);
 		newTeam = this.save(newTeam);
 		if (newTeam == null)
-			return false;
+			return null;
 
 		for (ApplicationUser user : users) {
 			if (addMember(newTeam, user) == false) {
-				return false;
+				return null;
 			}
 		}
-		return true;
+		return newTeam.getId().intValue();
 
 	}
 

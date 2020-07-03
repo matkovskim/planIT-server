@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -46,10 +47,11 @@ public class TeamController {
 	private DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
 	@PostMapping("/create")
-	public ResponseEntity<?> createTeam(@RequestBody TeamDTO createTeamDTO) {
+	public ResponseEntity<Integer> createTeam(@RequestBody TeamDTO createTeamDTO) {
 
-		if (teamService.createTeam(createTeamDTO)) {
-			return ResponseEntity.status(200).build();
+		Integer id = teamService.createTeam(createTeamDTO);
+		if(id !=null) {
+			return new ResponseEntity<>(id, HttpStatus.OK);
 		}
 
 		return ResponseEntity.status(400).build();
