@@ -37,9 +37,10 @@ public class ChatController {
 	private TeamService teamService;
 
 	@PostMapping("/message")
-	public ResponseEntity<?> sendMessage(@RequestBody MessageDTO messageDTO) {
+	public ResponseEntity<Long> sendMessage(@RequestBody MessageDTO messageDTO) {
 
-		if (chatService.sendMessage(messageDTO)) {
+		Long messgaeId = chatService.sendMessage(messageDTO);
+		if (messgaeId != null) {
 			try {
 				ApplicationUser sender = userService.findByEmail(messageDTO.getSender());
 				if (sender != null) {
@@ -50,7 +51,7 @@ public class ChatController {
 							if (!member.getEmail().equals(messageDTO.getSender())) {
 								String firstLastName = sender.getFirstName() + " " + sender.getLastName();
 								SendPushNotification.pushFCMNotification(firstLastName, member.getFirebaseId(),
-										team.getTitle(), messageDTO);
+										team.getTitle(), messageDTO, messgaeId.toString());
 							}
 						}
 					}
@@ -58,14 +59,14 @@ public class ChatController {
 			} catch (Exception e) {
 				return ResponseEntity.status(400).build();
 			}
-			return ResponseEntity.status(200).build();
+			return new ResponseEntity<>(messgaeId, HttpStatus.OK);
 		}
 		return ResponseEntity.status(400).build();
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<List<MessageDTO>> checkUser(@RequestParam Long teamId, @RequestParam Long lastDate) {
-		List<MessageDTO> messages = chatService.getMessages(teamId, lastDate);
+	public ResponseEntity<List<MessageDTO>> checkUser(@RequestParam Long teamId, @RequestParam Long lastId) {
+		List<MessageDTO> messages = chatService.getMessages(teamId, lastId);
 		if (messages != null) {
 			return new ResponseEntity<>(messages, HttpStatus.OK);
 		}

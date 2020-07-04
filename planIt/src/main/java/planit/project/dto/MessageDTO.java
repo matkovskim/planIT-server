@@ -10,16 +10,19 @@ public class MessageDTO {
 
 	private Long serverTeamId;
 
+	private Long messageId;
+
 	public MessageDTO() {
 
 	}
 
-	public MessageDTO(String message, Long createdAt, String sender, Long serverTeamId) {
+	public MessageDTO(String message, Long createdAt, String sender, Long serverTeamId, Long messageId) {
 		super();
 		this.message = message;
 		this.createdAt = createdAt;
 		this.sender = sender;
 		this.serverTeamId = serverTeamId;
+		this.messageId = messageId;
 	}
 
 	public String getMessage() {
@@ -52,6 +55,14 @@ public class MessageDTO {
 
 	public void setServerTeamId(Long serverTeamId) {
 		this.serverTeamId = serverTeamId;
+	}
+
+	public Long getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(Long messageId) {
+		this.messageId = messageId;
 	}
 
 }
