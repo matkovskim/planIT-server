@@ -150,6 +150,7 @@ public class TeamController {
 					dto.getUsers().add(conn.getUser());
 			}
 
+			System.out.println(dto);
 			return ResponseEntity.ok(dto);
 
 		}
@@ -163,7 +164,7 @@ public class TeamController {
 				dto.getUsers().add(conn.getUser());
 		}
 
-
+		System.out.println(dto);
 		return ResponseEntity.ok(dto);
 	}
 
