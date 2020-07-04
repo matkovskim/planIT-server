@@ -13,9 +13,12 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 public class Label {
     
+	@JsonProperty("globalId")
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;

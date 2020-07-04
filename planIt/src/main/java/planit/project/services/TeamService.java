@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import planit.project.dto.TeamDTO;
+import planit.project.dto.TeamMemberDTO;
+import planit.project.dto.TeamMemebershipDTO;
 import planit.project.model.ApplicationUser;
 import planit.project.model.Reminder;
 import planit.project.model.Task;
@@ -50,8 +52,10 @@ public class TeamService {
 		return this.teamRepository.findByIdAndDeleted(id, false);
 	}
 
-	public Integer createTeam(TeamDTO createTeamDTO) {
+	public List<TeamMemebershipDTO> createTeam(TeamDTO createTeamDTO) {
 
+		List<TeamMemebershipDTO>teamMemebershipList = new ArrayList<>();
+		
 		ApplicationUser creator = applicationUserRepository.findByEmail(createTeamDTO.getCreator());
 
 		if (creator == null)
@@ -73,25 +77,30 @@ public class TeamService {
 			return null;
 
 		for (ApplicationUser user : users) {
-			if (addMember(newTeam, user) == false) {
+			TeamMemebershipDTO teamMemebershipDTO = addMember(newTeam, user);
+			if (teamMemebershipDTO == null) {
 				return null;
 			}
+			teamMemebershipList.add(teamMemebershipDTO);
 		}
-		return newTeam.getId().intValue();
+		return teamMemebershipList;
 
 	}
 
-	public boolean addMember(Team team, ApplicationUser user) {
+	public TeamMemebershipDTO addMember(Team team, ApplicationUser user) {
 
 		TeamUserConnection conn = this.teamUserRepository.findIsMember(user, team, false);
 
 		if (conn != null)
-			return false;
+			return null;
 
 		conn = new TeamUserConnection(team, user);
 		conn = this.teamUserRepository.save(conn);
+		
+		TeamMemebershipDTO teamMemebrshepDTO = new TeamMemebershipDTO(conn.getId(), conn.getUser().getEmail(), conn.getTeam().getId());
+		System.out.println(teamMemebrshepDTO);
 
-		return (conn == null) ? false : true;
+		return (teamMemebrshepDTO == null) ? null : teamMemebrshepDTO;
 
 	}
 
@@ -157,12 +166,14 @@ public class TeamService {
 
 	}
 
-	public boolean updateTeamMembers(Integer teamId, TeamDTO teamDTO) {
+	public List<TeamMemebershipDTO> updateTeamMembers(Integer teamId, TeamDTO teamDTO) {
 
+		List<TeamMemebershipDTO>teamMemebershipList = new ArrayList<>();
+		
 		Team team = this.teamRepository.findByIdAndDeleted((long) teamId, false);
 
 		if (team == null)
-			return false;
+			return null;
 
 		List<ApplicationUser> users = new ArrayList<>();
 
@@ -170,7 +181,7 @@ public class TeamService {
 			ApplicationUser user;
 			user = this.applicationUserRepository.findByEmail(email);
 			if (user == null)
-				return false;
+				return null;
 			users.add(user);
 		}
 
@@ -184,11 +195,12 @@ public class TeamService {
 
 		for (ApplicationUser user : users) {
 			// TODO: check if it is the same?
-			addMember(team, user);
-
+			TeamMemebershipDTO teamMemebershipDTO = addMember(team, user);
+			teamMemebershipList.add(teamMemebershipDTO);
 		}
+	
 
-		return true;
+		return teamMemebershipList;
 
 	}
 
@@ -202,6 +214,7 @@ public class TeamService {
 
 		if (list != null) {
 			for (Team team : list) {
+				System.out.println("DA LI SA< ODRISAN? "+ team.isDeleted());
 				team.setCreatorEmail(team.getCreator().getEmail());
 				team.setCreatorId(team.getCreator().getId());
 			}
@@ -218,6 +231,8 @@ public class TeamService {
 
 		if (list != null) {
 			for (Team team : list) {
+				System.out.println("DA LI SA< ODRISAN? "+ team.isDeleted());
+
 				team.setCreatorEmail(team.getCreator().getEmail());
 				team.setCreatorId(team.getCreator().getId());
 			}

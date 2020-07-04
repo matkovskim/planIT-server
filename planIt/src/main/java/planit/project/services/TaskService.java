@@ -20,6 +20,10 @@ public class TaskService {
 	public List<Task> firstSync(ApplicationUser user) {
 
 		List<Task> list = this.taskRepository.findByUserAndDeleted(user, false);
+		List<Task> teamTasks = this.taskRepository.findAllTeamTasks(user, false, false);
+		if(teamTasks != null) {
+			list.addAll(teamTasks);
+		}
 
 		if (list != null) {
 			for (Task task : list) {
@@ -29,8 +33,10 @@ public class TaskService {
 				if (task.getTeam() != null)
 					task.setTeamId(task.getTeam().getId());
 				
-				if(task.getUser() != null)
-					task.setUserEmail(task.getUser().getEmail());
+				if(task.getAssignee() != null) {
+					task.setUserEmail(task.getAssignee().getEmail());
+					task.setUserId(task.getAssignee().getId());
+				}
 			}
 			return list;
 		}
@@ -41,20 +47,26 @@ public class TaskService {
 
 	public List<Task> syncDate(ApplicationUser user, Date syncDate) {
 
-		List<Task> list = this.taskRepository.findByUserAndModifyDateAfter(user, syncDate);
-
-		if (list != null) {
-			for (Task task : list) {
+		List<Task> personalTasks = this.taskRepository.findByUserAndModifyDateAfter(user, syncDate);
+		List<Task> teamTasks = this.taskRepository.findAllSyncTeamTasks(user, syncDate);
+		if(teamTasks != null) {
+			personalTasks.addAll(teamTasks);
+		}
+		
+		if (personalTasks != null) {
+			for (Task task : personalTasks) {
 				if (task.getReminder() != null)
 					task.setReminderId(task.getReminder().getId());
 
 				if (task.getTeam() != null)
 					task.setTeamId(task.getTeam().getId());
 				
-				if(task.getUser() != null)
-					task.setUserEmail(task.getUser().getEmail());
+				if(task.getAssignee() != null) {
+					task.setUserEmail(task.getAssignee().getEmail());
+					task.setUserId(task.getAssignee().getId());
+				}
 			}
-			return list;
+			return personalTasks;
 		}
 
 		return new ArrayList<>();

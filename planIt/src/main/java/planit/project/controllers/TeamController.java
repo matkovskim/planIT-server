@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import planit.project.dto.TeamDTO;
 import planit.project.dto.TeamMemberDTO;
 import planit.project.dto.TeamMemberResponseDTO;
+import planit.project.dto.TeamMemebershipDTO;
 import planit.project.dto.TeamSyncDTO;
 import planit.project.model.ApplicationUser;
 import planit.project.model.Team;
@@ -49,33 +51,11 @@ public class TeamController {
 	private DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
 	@PostMapping("/create")
-	public ResponseEntity<Integer> createTeam(@RequestBody TeamDTO createTeamDTO) {
+	public ResponseEntity<List<TeamMemebershipDTO>> createTeam(@RequestBody TeamDTO createTeamDTO) {
 
-		Integer id = teamService.createTeam(createTeamDTO);
-		if (id != null) {
-			return new ResponseEntity<>(id, HttpStatus.OK);
-		}
-
-		return ResponseEntity.status(400).build();
-
-	}
-
-	@PostMapping("/addMember")
-	public ResponseEntity<TeamMemberResponseDTO> addUser(@RequestBody TeamMemberDTO teamMemberDTO) {
-
-		Team team = this.teamService.findByIdAndDeleted((long) teamMemberDTO.getId());
-
-		if (team == null)
-			return ResponseEntity.status(400).build();
-
-		ApplicationUser user = this.userService.findByEmail(teamMemberDTO.getEmail());
-
-		if (user == null)
-			return ResponseEntity.status(400).build();
-
-		if (teamService.addMember(team, user)) {
-			return ResponseEntity.ok(new TeamMemberResponseDTO(user.getEmail(), user.getFirstName(), user.getLastName(),
-					user.getColour()));
+		List<TeamMemebershipDTO> teamMemebrshipList = teamService.createTeam(createTeamDTO);
+		if (teamMemebrshipList != null) {
+			return new ResponseEntity<>(teamMemebrshipList, HttpStatus.OK);
 		}
 
 		return ResponseEntity.status(400).build();
@@ -113,9 +93,11 @@ public class TeamController {
 	}
 
 	@PutMapping("/members/{teamId}")
-	public ResponseEntity<?> updateTeamMembers(@RequestBody TeamDTO teamDTO, @PathVariable Integer teamId) {
-		if (teamService.updateTeamMembers(teamId, teamDTO)) {
-			return ResponseEntity.status(200).build();
+	public ResponseEntity<List<TeamMemebershipDTO>> updateTeamMembers(@RequestBody TeamDTO teamDTO,
+			@PathVariable Integer teamId) {
+		List<TeamMemebershipDTO> updatedMembership = teamService.updateTeamMembers(teamId, teamDTO);
+		if (updatedMembership != null) {
+			return new ResponseEntity<>(updatedMembership, HttpStatus.OK);
 		}
 		return ResponseEntity.status(400).build();
 	}
@@ -146,10 +128,11 @@ public class TeamController {
 			dto.setTeamUserConnections(this.teamService.syncDateConn(user, dateUserSync));
 			dto.setUsers(new HashSet<>());
 			for (TeamUserConnection conn : dto.getTeamUserConnections()) {
-				if(!dto.getUsers().contains(conn.getUser()))
+				if (!dto.getUsers().contains(conn.getUser()))
 					dto.getUsers().add(conn.getUser());
 			}
 
+			System.out.println(dto);
 			return ResponseEntity.ok(dto);
 
 		}
@@ -159,11 +142,11 @@ public class TeamController {
 		dto.setTeamUserConnections(this.teamService.firstSyncConn(user));
 		dto.setUsers(new HashSet<>());
 		for (TeamUserConnection conn : dto.getTeamUserConnections()) {
-			if(!dto.getUsers().contains(conn.getUser()))
+			if (!dto.getUsers().contains(conn.getUser()))
 				dto.getUsers().add(conn.getUser());
 		}
 
-
+		System.out.println(dto);
 		return ResponseEntity.ok(dto);
 	}
 

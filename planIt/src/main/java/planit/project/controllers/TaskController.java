@@ -64,6 +64,7 @@ public class TaskController {
 	private TeamService teamService;
 
 	private DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	private DateFormat formatTime = new SimpleDateFormat("HH:mm");
 
 	private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 	private SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -94,7 +95,7 @@ public class TaskController {
 			dto.setLabels(this.labelService.syncByDate(user, dateUserSync));
 			dto.setTaskLabelConnections(this.taskLabelConnectionService.syncByDate(user, dateUserSync));
 			dto.setTaskReminders(this.reminderService.syncByDateTask(user, dateUserSync));
-
+			System.out.println(dto);
 			return ResponseEntity.ok(dto);
 
 		}
@@ -103,7 +104,7 @@ public class TaskController {
 		dto.setLabels(this.labelService.firstSync(user));
 		dto.setTaskLabelConnections(this.taskLabelConnectionService.firstSync(user));
 		dto.setTaskReminders(this.reminderService.firstTask(user));
-
+		System.out.println(dto);
 		return ResponseEntity.ok(dto);
 	}
 
@@ -112,14 +113,12 @@ public class TaskController {
 
 		ApplicationUser user = this.userService.findByEmail("vesnam@gmail.com");
 
-		Team team = new Team();
-		team = this.teamService.save(team);
-
 		Reminder reminder = new Reminder();
+		reminder.setDate("23:52");
 		reminder = this.reminderService.save(reminder);
 
 		Task task = new Task("Task 1", "Opis", "address", format.parse("2020-06-22"), format.parse("2020-07-27"), false,
-				false, TaskPriority.HIGH, null, null, team, reminder, user);
+				false, TaskPriority.HIGH, null, null, null, reminder, user);
 		task = this.taskService.save(task);
 
 		Label label = new Label();

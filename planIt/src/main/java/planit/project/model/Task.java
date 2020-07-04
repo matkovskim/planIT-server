@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 public class Task {
 
+	@JsonProperty("globalId")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -78,6 +79,10 @@ public class Task {
 	
 	@Transient 
 	private String userEmail;
+	
+	@JsonProperty("user")
+	@Transient 
+	private Long userId;
 
 	@JsonIgnore
 	@ManyToOne
@@ -90,6 +95,10 @@ public class Task {
 	@JsonIgnore
 	@ManyToOne
 	private ApplicationUser user;
+	
+	@JsonIgnore
+	@ManyToOne
+	private ApplicationUser assignee;
 
 	public Task() {
 	}
@@ -263,6 +272,20 @@ public class Task {
 
 	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public ApplicationUser getAssignee() {
+		return assignee;
+	}
+
+	public void setAssignee(ApplicationUser assignee) {
+		this.assignee = assignee;
 	}
 
 }
