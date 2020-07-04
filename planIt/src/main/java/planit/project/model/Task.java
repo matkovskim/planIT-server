@@ -272,6 +272,8 @@ public class Task {
 
 	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
+	}
+	
 	public Long getUserId() {
 		return userId;
 	}

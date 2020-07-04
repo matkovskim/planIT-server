@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import planit.project.model.ApplicationUser;
 import planit.project.model.Label;
-import planit.project.model.Reminder;
 
 @Repository
 public interface LabelRepository extends JpaRepository<Label, Long>, JpaSpecificationExecutor<Label> {

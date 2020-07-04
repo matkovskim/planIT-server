@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javax.validation.constraints.NotNull;
 
-import planit.project.model.Label;
 import planit.project.model.TaskPriority;
 
 public class TaskDTO {

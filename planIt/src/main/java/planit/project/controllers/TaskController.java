@@ -181,7 +181,7 @@ public class TaskController {
 		if (taskDTO.getUserEmail() != null) {
 			ApplicationUser user = userService.findByEmail(taskDTO.getUserEmail());
 			if (user != null) {
-				task.setUser(user);
+				task.setAssignee(user);
 			}
 		}
 
@@ -309,10 +309,10 @@ public class TaskController {
 		if (taskDTO.getUserEmail() != null) {
 			ApplicationUser user = userService.findByEmail(taskDTO.getUserEmail());
 			if (user != null) {
-				task.setUser(user);
+				task.setAssignee(user);
 			}
 		} else {
-			task.setUser(null);
+			task.setAssignee(null);
 		}
 
 		Task savedTask = taskService.save(task);
