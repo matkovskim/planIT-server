@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import planit.project.model.ApplicationUser;
+import planit.project.model.Task;
 import planit.project.model.TaskLabelConnection;
 
 @Repository
@@ -19,5 +20,7 @@ public interface TaskLabelConnectionRepository extends JpaRepository<TaskLabelCo
 	
 	@Query("SELECT tc FROM TaskLabelConnection tc inner join tc.task as t WHERE t.user = ?2 and tc.modifyDate > ?1")
 	List<TaskLabelConnection> findTaskLabelConnectionSync(Date lastUpdated, ApplicationUser user);
+	
+	List<TaskLabelConnection> findByTask(Task task);
 
 }

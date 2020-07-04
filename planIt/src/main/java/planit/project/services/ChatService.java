@@ -28,25 +28,26 @@ public class ChatService {
 	@Autowired
 	private TeamRepository teamRepository;
 
-	public boolean sendMessage(MessageDTO messageDTO) {
+	public Long sendMessage(MessageDTO messageDTO) {
 
 		ApplicationUser sender = applicationUserRepository.findByEmail(messageDTO.getSender());
 
 		Optional<Team> optionalTeam = teamRepository.findById(messageDTO.getServerTeamId());
 
 		if (!optionalTeam.isPresent()) {
-			return false;
+			return null;
 		}
 
 		if (sender != null) {
 			UserMessage newMessage = new UserMessage(messageDTO.getMessage(), messageDTO.getCreatedAt(), sender,
 					optionalTeam.get());
-			if (userMessageRepository.save(newMessage) != null) {
-				return true;
+			UserMessage savedMessage = userMessageRepository.save(newMessage);
+			if (savedMessage != null) {
+				return savedMessage.getId();
 			}
-			return false;
+			return null;
 		}
-		return false;
+		return null;
 
 	}
 
@@ -58,7 +59,7 @@ public class ChatService {
 		return null;
 	}
 
-	public List<MessageDTO> getMessages(Long teamId) {
+	public List<MessageDTO> getMessages(Long teamId, Long lastId) {
 
 		List<MessageDTO> messageDTOs = new ArrayList<MessageDTO>();
 
@@ -67,9 +68,11 @@ public class ChatService {
 			List<UserMessage> messages = userMessageRepository.findAllByTeam(team.get());
 			if (messages != null) {
 				for (UserMessage m : messages) {
-					MessageDTO newMessage = new MessageDTO(m.getMessage(), m.getCreatedAt(), m.getSender().getEmail(),
-							teamId.longValue());
-					messageDTOs.add(newMessage);
+					if (m.getId() > lastId) {
+						MessageDTO newMessage = new MessageDTO(m.getMessage(), m.getCreatedAt(),
+								m.getSender().getEmail(), teamId.longValue(), m.getId());
+						messageDTOs.add(newMessage);
+					}
 				}
 				return messageDTOs;
 			}

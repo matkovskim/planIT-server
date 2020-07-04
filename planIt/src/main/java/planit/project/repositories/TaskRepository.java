@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import planit.project.model.ApplicationUser;
 import planit.project.model.Task;
+import planit.project.model.Team;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {
@@ -26,4 +27,5 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
 	@Query("SELECT t FROM Task t, Team team, TeamUserConnection tc WHERE tc.team = team and t.team = team and tc.user = ?1 and tc.modifyDate > ?2 ")
 	List<Task> findAllSyncTeamTasks(ApplicationUser user, Date lastUpdated );
 	
+	List<Task> findByTeam(Team team);
 }
