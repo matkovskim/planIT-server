@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import planit.project.model.ApplicationUser;
-import planit.project.model.Label;
 import planit.project.model.Reminder;
 import planit.project.repositories.ReminderRepository;
 
@@ -35,6 +34,10 @@ public class ReminderService {
 	
 	public Reminder save(Reminder reminder) {
 		return this.repository.save(reminder);
+	}
+	
+	public Reminder findByIdAndDeleted(Long id) {
+		return this.repository.findByIdAndDeleted(id, false);
 	}
 
 }

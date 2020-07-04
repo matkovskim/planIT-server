@@ -1,18 +1,27 @@
 package planit.project.controllers;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import planit.project.dto.TaskDTO;
+import planit.project.dto.TaskResponseDTO;
 import planit.project.dto.TaskSyncDTO;
 import planit.project.model.ApplicationUser;
 import planit.project.model.Label;
@@ -52,6 +61,9 @@ public class TaskController {
 	private TeamService teamService;
 
 	private DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+	private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+	private SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	@GetMapping("/sync")
 	public ResponseEntity<?> synchronizationData(@RequestParam String email,
@@ -121,6 +133,123 @@ public class TaskController {
 		this.taskLabelConnectionService.save(conn);
 
 		return ResponseEntity.status(200).build();
+	}
+
+	@PostMapping
+	public ResponseEntity<?> createTask(@RequestBody @Valid TaskDTO taskDTO) {
+
+		Task task = new Task();
+		task.setTitle(taskDTO.getTitle());
+		task.setDescription(taskDTO.getDescription());
+
+		try {
+			task.setStartDate(dbDateFormat.parse(taskDTO.getStartDate()));
+		} catch (ParseException e) {
+
+		}
+		try {
+			task.setStartTime(timeFormat.parse(taskDTO.getStartTime()));
+		} catch (ParseException e) {
+
+		}
+		task.setAddress(taskDTO.getAddress());
+		task.setLongitude(taskDTO.getLongitude());
+		task.setLatitude(taskDTO.getLatitude());
+		task.setDone(taskDTO.isDone());
+		task.setPriority(taskDTO.getPriority());
+
+		TaskResponseDTO taskResponseDTO = new TaskResponseDTO();
+
+		if (taskDTO.getReminderTime() != null) {
+			Reminder reminder = new Reminder();
+			reminder.setDate(taskDTO.getReminderTime());
+			reminder.setDeleted(false);
+
+			Reminder savedReminder = reminderService.save(reminder);
+			if (savedReminder != null) {
+				task.setReminder(savedReminder);
+				taskResponseDTO.setReminderId(savedReminder.getId());
+			}
+		}
+
+		if (taskDTO.getUserEmail() != null) {
+			ApplicationUser user = userService.findByEmail(taskDTO.getUserEmail());
+			if (user != null) {
+				task.setUser(user);
+			}
+		}
+
+		if (taskDTO.getTeamId() != null) {
+			Team team = teamService.findByIdAndDeleted(taskDTO.getTeamId());
+			if (team != null) {
+				task.setTeam(team);
+			}
+		}
+
+		Task savedTask = taskService.save(task);
+
+		if (savedTask != null) {
+			taskResponseDTO.setGlobalId(savedTask.getId());
+
+			return ResponseEntity.ok(taskResponseDTO);
+		} else {
+			return ResponseEntity.badRequest().build();
+		}
+
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<?> updateTask(@RequestBody @Valid TaskDTO taskDTO, @PathVariable Long teamId,
+			@RequestParam(value = "date") Long date) {
+		Task task = taskService.findByIdAndDeleted(teamId);
+
+		if (task == null) {
+			return ResponseEntity.notFound().build();
+		} else if (task.getModifyDate().getTime() <= date) {
+			return ResponseEntity.badRequest().build();
+		}
+
+		task.setTitle(taskDTO.getTitle());
+		task.setDescription(taskDTO.getDescription());
+
+		try {
+			task.setStartDate(dbDateFormat.parse(taskDTO.getStartDate()));
+		} catch (ParseException e) {
+
+		}
+		try {
+			task.setStartTime(timeFormat.parse(taskDTO.getStartTime()));
+		} catch (ParseException e) {
+
+		}
+		task.setAddress(taskDTO.getAddress());
+		task.setLongitude(taskDTO.getLongitude());
+		task.setLatitude(taskDTO.getLatitude());
+		task.setDone(taskDTO.isDone());
+		task.setPriority(taskDTO.getPriority());
+
+		if (taskDTO.getReminderTime() != null) {
+			Reminder reminder = task.getReminder();
+			reminder.setDate(taskDTO.getReminderTime());
+		} else {
+			task.setReminder(null);
+		}
+
+		if (taskDTO.getUserEmail() != null) {
+			ApplicationUser user = userService.findByEmail(taskDTO.getUserEmail());
+			if (user != null) {
+				task.setUser(user);
+			}
+		} else {
+			task.setUser(null);
+		}
+
+		Task savedTask = taskService.save(task);
+		if (savedTask != null) {
+			return ResponseEntity.ok().build();
+		} else {
+			return ResponseEntity.badRequest().build();
+		}
 	}
 
 }

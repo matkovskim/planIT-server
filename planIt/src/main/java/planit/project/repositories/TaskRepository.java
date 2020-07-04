@@ -13,11 +13,13 @@ import planit.project.model.Task;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {
 	
-	Task  findByUserAndIdAndDeleted(ApplicationUser user, Long id, boolean deleted);
+	Task findByUserAndIdAndDeleted(ApplicationUser user, Long id, boolean deleted);
 
 	List<Task> findByUserAndModifyDateAfter(ApplicationUser user , Date date);
 
 	List<Task> findByUserAndDeleted(ApplicationUser user, boolean deleted );
+	
+	Task findByIdAndDeleted(Long id, boolean deleted);
 	
 	
 }

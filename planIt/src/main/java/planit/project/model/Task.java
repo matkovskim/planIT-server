@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -31,24 +32,12 @@ public class Task {
 
 	@Column
 	private String description;
-
-	public Task(String title, String description, String address, Date startDate, Date startTime, boolean done,
-			boolean deleted, TaskPriority priority, Long teamId, Long reminderId, Team team, Reminder reminder,
-			ApplicationUser user) {
-		this.title = title;
-		this.description = description;
-		this.address = address;
-		this.startDate = startDate;
-		this.startTime = startTime;
-		this.done = done;
-		this.deleted = deleted;
-		this.priority = priority;
-		this.teamId = teamId;
-		this.reminderId = reminderId;
-		this.team = team;
-		this.reminder = reminder;
-		this.user = user;
-	}
+	
+	@Column
+	private Double longitude;
+	
+	@Column
+	private Double latitude;
 
 	@Column
 	private String address;
@@ -65,11 +54,13 @@ public class Task {
 	@Column
 	private boolean deleted;
 	
+	@JsonIgnore
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_date")
 	private Date createDate;
 
+	@JsonIgnore
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modify_date")
@@ -79,10 +70,14 @@ public class Task {
 	private TaskPriority priority;
 	
 	@Transient
+	@JsonAlias("team")
 	private Long teamId;
 	
-	@Transient 
+	@Transient
 	private Long reminderId;
+	
+	@Transient 
+	private String userEmail;
 
 	@JsonIgnore
 	@ManyToOne
@@ -97,6 +92,24 @@ public class Task {
 	private ApplicationUser user;
 
 	public Task() {
+	}
+	
+	public Task(String title, String description, String address, Date startDate, Date startTime, boolean done,
+			boolean deleted, TaskPriority priority, Long teamId, Long reminderId, Team team, Reminder reminder,
+			ApplicationUser user) {
+		this.title = title;
+		this.description = description;
+		this.address = address;
+		this.startDate = startDate;
+		this.startTime = startTime;
+		this.done = done;
+		this.deleted = deleted;
+		this.priority = priority;
+		this.teamId = teamId;
+		this.reminderId = reminderId;
+		this.team = team;
+		this.reminder = reminder;
+		this.user = user;
 	}
 
 	public String getTitle() {
@@ -226,6 +239,30 @@ public class Task {
 
 	public void setReminderId(Long reminderId) {
 		this.reminderId = reminderId;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
 	}
 
 }
