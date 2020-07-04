@@ -1,9 +1,12 @@
 package planit.project.dto;
 
+import java.util.ArrayList;
+
 public class TaskResponseDTO {
 	
 	private Long globalId;
 	private Long reminderId;
+	private ArrayList<LabelDTO> labels;
 
 	public TaskResponseDTO() {
 		// TODO Auto-generated constructor stub
@@ -23,6 +26,14 @@ public class TaskResponseDTO {
 
 	public void setReminderId(Long reminderId) {
 		this.reminderId = reminderId;
+	}
+
+	public ArrayList<LabelDTO> getLabels() {
+		return labels;
+	}
+
+	public void setLabels(ArrayList<LabelDTO> labels) {
+		this.labels = labels;
 	}
 
 }

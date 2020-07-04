@@ -22,5 +22,7 @@ public interface TaskLabelConnectionRepository extends JpaRepository<TaskLabelCo
 	List<TaskLabelConnection> findTaskLabelConnectionSync(Date lastUpdated, ApplicationUser user);
 	
 	List<TaskLabelConnection> findByTask(Task task);
+	
+	List<TaskLabelConnection> findByTaskAndDeleted(Task task, Boolean deleted);
 
 }

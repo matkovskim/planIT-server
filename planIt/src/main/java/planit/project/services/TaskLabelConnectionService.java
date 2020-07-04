@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import planit.project.model.ApplicationUser;
+import planit.project.model.Task;
 import planit.project.model.TaskLabelConnection;
 import planit.project.repositories.TaskLabelConnectionRepository;
 
@@ -50,5 +51,8 @@ public class TaskLabelConnectionService {
 		return this.repository.save(conn);
 	}
 	
+	public List<TaskLabelConnection> findByTaskAndDeleted(Task task){
+		return repository.findByTaskAndDeleted(task, false);
+	}
 
 }

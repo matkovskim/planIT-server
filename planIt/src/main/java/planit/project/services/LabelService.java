@@ -41,5 +41,8 @@ public class LabelService {
 		return this.labelRepository.save(label);
 	}
 	
+	public Label findByIdAndDeleted(Long id) {
+		return this.labelRepository.findByIdAndDeleted(id, false);
+	}
 
 }

@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import planit.project.dto.LabelDTO;
 import planit.project.dto.TaskDTO;
 import planit.project.dto.TaskResponseDTO;
 import planit.project.dto.TaskSyncDTO;
@@ -147,11 +150,15 @@ public class TaskController {
 		} catch (ParseException e) {
 
 		}
-		try {
-			task.setStartTime(timeFormat.parse(taskDTO.getStartTime()));
-		} catch (ParseException e) {
 
+		if (taskDTO.getStartTime() != null) {
+			try {
+				task.setStartTime(timeFormat.parse(taskDTO.getStartTime()));
+			} catch (ParseException e) {
+
+			}
 		}
+
 		task.setAddress(taskDTO.getAddress());
 		task.setLongitude(taskDTO.getLongitude());
 		task.setLatitude(taskDTO.getLatitude());
@@ -191,6 +198,45 @@ public class TaskController {
 		if (savedTask != null) {
 			taskResponseDTO.setGlobalId(savedTask.getId());
 
+			if (taskDTO.getLabels() != null && !taskDTO.getLabels().isEmpty()) {
+				for (LabelDTO label : taskDTO.getLabels()) {
+					if (label.getGlobalId() == null) {
+						Label newLabel = new Label(label.getName(), label.getColor());
+						Label savedLabel = labelService.save(newLabel);
+						if (savedLabel != null) {
+							label.setGlobalId(savedLabel.getId());
+
+							TaskLabelConnection tlConnection = new TaskLabelConnection();
+							tlConnection.setLabel(savedLabel);
+							tlConnection.setTask(task);
+							tlConnection.setDeleted(false);
+
+							TaskLabelConnection savedTLConnection = taskLabelConnectionService.save(tlConnection);
+							if (savedTLConnection != null) {
+								label.setConnectionId(savedTLConnection.getId());
+							}
+						}
+
+					} else {
+						Label existingLabel = labelService.findByIdAndDeleted(label.getGlobalId());
+						if (existingLabel != null) {
+
+							TaskLabelConnection tlConnection = new TaskLabelConnection();
+							tlConnection.setLabel(existingLabel);
+							tlConnection.setTask(task);
+							tlConnection.setDeleted(false);
+
+							TaskLabelConnection savedTLConnection = taskLabelConnectionService.save(tlConnection);
+							if (savedTLConnection != null) {
+								label.setConnectionId(savedTLConnection.getId());
+							}
+						}
+					}
+				}
+			}
+
+			taskResponseDTO.setLabels(taskDTO.getLabels());
+
 			return ResponseEntity.ok(taskResponseDTO);
 		} else {
 			return ResponseEntity.badRequest().build();
@@ -198,14 +244,16 @@ public class TaskController {
 
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<?> updateTask(@RequestBody @Valid TaskDTO taskDTO, @PathVariable Long teamId,
+	@PutMapping("/{taskId}")
+	public ResponseEntity<?> updateTask(@RequestBody @Valid TaskDTO taskDTO, @PathVariable Long taskId,
 			@RequestParam(value = "date") Long date) {
-		Task task = taskService.findByIdAndDeleted(teamId);
+		Task task = taskService.findByIdAndDeleted(taskId);
+		TaskResponseDTO taskResponseDTO = new TaskResponseDTO();
 
 		if (task == null) {
 			return ResponseEntity.notFound().build();
-		} else if (task.getModifyDate().getTime() <= date) {
+
+		} else if (task.getModifyDate().getTime() > date) {
 			return ResponseEntity.badRequest().build();
 		}
 
@@ -217,10 +265,12 @@ public class TaskController {
 		} catch (ParseException e) {
 
 		}
-		try {
-			task.setStartTime(timeFormat.parse(taskDTO.getStartTime()));
-		} catch (ParseException e) {
+		if (task.getStartTime() != null) {
+			try {
+				task.setStartTime(timeFormat.parse(taskDTO.getStartTime()));
+			} catch (ParseException e) {
 
+			}
 		}
 		task.setAddress(taskDTO.getAddress());
 		task.setLongitude(taskDTO.getLongitude());
@@ -230,9 +280,31 @@ public class TaskController {
 
 		if (taskDTO.getReminderTime() != null) {
 			Reminder reminder = task.getReminder();
-			reminder.setDate(taskDTO.getReminderTime());
+			if (reminder != null) {
+				reminder.setDate(taskDTO.getReminderTime());
+				taskResponseDTO.setReminderId(reminder.getId());
+			} else {
+				Reminder newReminder = new Reminder();
+				newReminder.setDate(taskDTO.getReminderTime());
+				newReminder.setDeleted(false);
+
+				Reminder changedReminder = reminderService.save(newReminder);
+				if (changedReminder != null) {
+					taskResponseDTO.setReminderId(changedReminder.getId());
+					task.setReminder(changedReminder);
+				}
+
+			}
+
 		} else {
-			task.setReminder(null);
+			Reminder reminder = task.getReminder();
+			if (reminder != null) {
+				task.setReminder(null);
+				reminder.setDeleted(true);
+				reminderService.save(reminder);
+			} else {
+				task.setReminder(null);
+			}
 		}
 
 		if (taskDTO.getUserEmail() != null) {
@@ -246,9 +318,36 @@ public class TaskController {
 
 		Task savedTask = taskService.save(task);
 		if (savedTask != null) {
-			return ResponseEntity.ok().build();
+			taskResponseDTO.setGlobalId(savedTask.getId());
+			return ResponseEntity.ok(taskResponseDTO);
 		} else {
 			return ResponseEntity.badRequest().build();
+		}
+	}
+	
+	@DeleteMapping("/{taskId}")
+	public ResponseEntity<?> deleteTask(@PathVariable Long taskId) {
+		Task task = taskService.findByIdAndDeleted(taskId);		
+		if(task != null) {			
+			Reminder reminder = task.getReminder();
+			if(reminder != null) {
+				reminder.setDeleted(true);
+				reminderService.save(reminder);
+			}
+			
+			task.setDeleted(true);
+			taskService.save(task);
+			
+			List<TaskLabelConnection> tlConnections = taskLabelConnectionService.findByTaskAndDeleted(task);
+			for(TaskLabelConnection tlc : tlConnections) {
+				tlc.setDeleted(true);
+				taskLabelConnectionService.save(tlc);
+			}
+			
+			return ResponseEntity.ok().build();
+		}
+		else {
+			return ResponseEntity.notFound().build();
 		}
 	}
 

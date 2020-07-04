@@ -37,7 +37,7 @@ public class TaskDTO {
 	
 	private String userEmail;
 
-	private ArrayList<Label> labels;
+	private ArrayList<LabelDTO> labels;
 	
 	public TaskDTO() {
 		
@@ -155,11 +155,11 @@ public class TaskDTO {
 				+ reminderTime + ", userEmail=" + userEmail + "]";
 	}
 
-	public ArrayList<Label> getLabels() {
+	public ArrayList<LabelDTO> getLabels() {
 		return labels;
 	}
 
-	public void setLabels(ArrayList<Label> labels) {
+	public void setLabels(ArrayList<LabelDTO> labels) {
 		this.labels = labels;
 	}
 	
