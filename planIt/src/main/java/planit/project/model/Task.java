@@ -17,8 +17,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class Task {
@@ -70,7 +70,7 @@ public class Task {
 	private TaskPriority priority;
 	
 	@Transient
-	@JsonAlias("team")
+	@JsonProperty("team")
 	private Long teamId;
 	
 	@Transient

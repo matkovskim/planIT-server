@@ -14,20 +14,22 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import planit.project.dto.RegisterDTO;
 
 @Entity
 public class ApplicationUser {
 
-	@JsonIgnore
 	@Id
+	@JsonProperty("globalId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column
 	private String email;
 
+	@JsonProperty("name")
 	@Column
 	private String firstName;
 
@@ -64,7 +66,7 @@ public class ApplicationUser {
 
 	public ApplicationUser(RegisterDTO newUser) {
 		this.email = newUser.getEmail();
-		this.firstName = newUser.getFirstName();
+		this.firstName = newUser.getName();
 		this.lastName = newUser.getLastName();
 		this.firebaseId = newUser.getFirebaseId();
 		this.colour = newUser.getColour();

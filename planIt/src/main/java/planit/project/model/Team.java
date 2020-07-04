@@ -16,25 +16,30 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class Team {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonProperty("serverTeamId")
 	private Long id;
 
 	@Column
+	@JsonProperty("name")
 	private String title;
 
 	@Column
 	private String description;
 	
+	@JsonIgnore
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_date")
 	private Date createDate;
 
+	@JsonIgnore
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "modify_date")
@@ -45,6 +50,9 @@ public class Team {
 	
 	@Transient
 	private String creatorEmail;
+	
+	@Transient
+	private Long creatorId;
 
 	@JsonIgnore
 	@ManyToOne
@@ -124,6 +132,14 @@ public class Team {
 
 	public void setCreatorEmail(String creatorEmail) {
 		this.creatorEmail = creatorEmail;
+	}
+
+	public Long getCreatorId() {
+		return creatorId;
+	}
+
+	public void setCreatorId(Long creatorId) {
+		this.creatorId = creatorId;
 	}
 
 }

@@ -1,7 +1,9 @@
 package planit.project.dto;
 
 import java.util.List;
+import java.util.Set;
 
+import planit.project.model.ApplicationUser;
 import planit.project.model.Team;
 import planit.project.model.TeamUserConnection;
 import planit.project.model.UserMessage;
@@ -13,6 +15,8 @@ public class TeamSyncDTO {
 	private List<TeamUserConnection> teamUserConnections;
 
 	private List<UserMessage> messages;
+	
+	private Set<ApplicationUser> users;
 
 	public List<Team> getTeams() {
 		return teams;
@@ -36,6 +40,14 @@ public class TeamSyncDTO {
 
 	public void setMessages(List<UserMessage> messages) {
 		this.messages = messages;
+	}
+
+	public Set<ApplicationUser> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<ApplicationUser> users) {
+		this.users = users;
 	}
 	
 	

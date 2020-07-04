@@ -6,7 +6,7 @@ public class RegisterDTO {
 
 	private String password;
 
-	private String firstName;
+	private String name;
 
 	private String lastName;
 
@@ -34,12 +34,12 @@ public class RegisterDTO {
 		this.password = password;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getName() {
+		return name;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setName(String firstName) {
+		this.name = firstName;
 	}
 
 	public String getLastName() {
