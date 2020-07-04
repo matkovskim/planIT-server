@@ -58,7 +58,7 @@ public class ChatService {
 		return null;
 	}
 
-	public List<MessageDTO> getMessages(Long teamId) {
+	public List<MessageDTO> getMessages(Long teamId, Long lastDate) {
 
 		List<MessageDTO> messageDTOs = new ArrayList<MessageDTO>();
 
@@ -67,9 +67,11 @@ public class ChatService {
 			List<UserMessage> messages = userMessageRepository.findAllByTeam(team.get());
 			if (messages != null) {
 				for (UserMessage m : messages) {
-					MessageDTO newMessage = new MessageDTO(m.getMessage(), m.getCreatedAt(), m.getSender().getEmail(),
-							teamId.longValue());
-					messageDTOs.add(newMessage);
+					if (m.getCreatedAt() > lastDate) {
+						MessageDTO newMessage = new MessageDTO(m.getMessage(), m.getCreatedAt(),
+								m.getSender().getEmail(), teamId.longValue());
+						messageDTOs.add(newMessage);
+					}
 				}
 				return messageDTOs;
 			}

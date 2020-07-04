@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import planit.project.model.ApplicationUser;
 import planit.project.model.Task;
+import planit.project.model.Team;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {
@@ -19,5 +20,5 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
 
 	List<Task> findByUserAndDeleted(ApplicationUser user, boolean deleted );
 	
-	
+	List<Task> findByTeam(Team team);
 }

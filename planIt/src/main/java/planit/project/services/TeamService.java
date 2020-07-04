@@ -9,10 +9,16 @@ import org.springframework.stereotype.Service;
 
 import planit.project.dto.TeamDTO;
 import planit.project.model.ApplicationUser;
+import planit.project.model.Reminder;
+import planit.project.model.Task;
+import planit.project.model.TaskLabelConnection;
 import planit.project.model.Team;
 import planit.project.model.TeamUserConnection;
 import planit.project.model.UserMessage;
 import planit.project.repositories.ApplicationUserRepository;
+import planit.project.repositories.ReminderRepository;
+import planit.project.repositories.TaskLabelConnectionRepository;
+import planit.project.repositories.TaskRepository;
 import planit.project.repositories.TeamRepository;
 import planit.project.repositories.TeamUserConnectionRepository;
 
@@ -26,7 +32,16 @@ public class TeamService {
 	private TeamRepository teamRepository;
 
 	@Autowired
+	private TaskRepository taskRepository;
+
+	@Autowired
 	private TeamUserConnectionRepository teamUserRepository;
+
+	@Autowired
+	private TaskLabelConnectionRepository taskLabelConnectionRepository;
+
+	@Autowired
+	private ReminderRepository reminderRepository;
 
 	@Autowired
 	private ChatService chatService;
@@ -99,6 +114,27 @@ public class TeamService {
 			for (UserMessage message : messages) {
 				message.setDeleted(true);
 				this.chatService.save(message);
+			}
+		}
+
+		List<Task> tasks = taskRepository.findByTeam(team);
+		if (tasks != null) {
+			for (Task task : tasks) {
+				Reminder reminder = task.getReminder();
+				if (reminder != null) {
+					reminder.setDeleted(true);
+					reminderRepository.save(reminder);
+				}
+				List<TaskLabelConnection> connections = taskLabelConnectionRepository.findByTask(task);
+				if (connections != null) {
+					for (TaskLabelConnection con : connections) {
+						con.setDeleted(true);
+						taskLabelConnectionRepository.save(con);
+					}
+				}
+
+				task.setDeleted(true);
+				this.taskRepository.save(task);
 			}
 		}
 
@@ -198,7 +234,7 @@ public class TeamService {
 		if (listTeam != null) {
 			for (Team team : listTeam) {
 				List<TeamUserConnection> conn = this.teamUserRepository.findMembers(team, false);
-				for(TeamUserConnection c : conn) {
+				for (TeamUserConnection c : conn) {
 					c.setTeamId(team.getId());
 				}
 				members.addAll(conn);
@@ -217,13 +253,12 @@ public class TeamService {
 		if (listTeam != null) {
 			for (Team team : listTeam) {
 				List<TeamUserConnection> conn = this.teamUserRepository.findModifiedMembers(team, syncDate);
-				for(TeamUserConnection c : conn) {
+				for (TeamUserConnection c : conn) {
 					c.setTeamId(team.getId());
 				}
 				members.addAll(conn);
 			}
-			
-			
+
 			return members;
 		}
 

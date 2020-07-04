@@ -64,8 +64,8 @@ public class ChatController {
 	}
 
 	@GetMapping("/all")
-	public ResponseEntity<List<MessageDTO>> checkUser(@RequestParam Long teamId) {
-		List<MessageDTO> messages = chatService.getMessages(teamId);
+	public ResponseEntity<List<MessageDTO>> checkUser(@RequestParam Long teamId, @RequestParam Long lastDate) {
+		List<MessageDTO> messages = chatService.getMessages(teamId, lastDate);
 		if (messages != null) {
 			return new ResponseEntity<>(messages, HttpStatus.OK);
 		}
